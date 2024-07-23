@@ -76,21 +76,39 @@ destacoEnEvento(Pirata,Evento):-
 % Podiamos hacerlo con forall.
 pirataDestacado(Pirata,Evento):-
     impactoEnRecompensa(Pirata,Evento,Monto),
-    forall((impactoEnRecompensa(_,Evento,OtroMonto),OtroPirata \=Pirata),Monto >= OtroMonto).
+    forall((impactoEnRecompensa(OtroPirata,Evento,OtroMonto),OtroPirata \=Pirata),Monto >= OtroMonto).
 
 % punto 3
+pirataDesapercibido(Pirata,Evento):-
+    tripulante(Pirata,Tripulacion),
+    participoDeEvento(Tripulacion,Evento),
+    not(impactoEnRecompensa(Pirata,Evento,_)).
 
+% punto 4
+recompensaTotal(Tripulacion,Total):-
+    tripulante(_,Tripulacion),
+    findall(RecompensaActual,(tripulante(Pirata,Tripulacion),recompensaActual(Pirata,RecompensaActual)),RecompensaTripulantes),
+    sumlist(RecompensaTripulantes,Total).
 
+recompensaActual(Pirata,RecompensaActual):- %relaciona un pirata con su recompensa actual, osea suma los montos
+    tripulante(Pirata,_),
+    findall(Recompensa,impactoEnRecompensa(Pirata,_,Recompensa),RecompensasEventos),
+    sumlist(RecompensasEventos,RecompensaActual).
 
+% punto 5
+tripulacionTemible(Tripulacion):-
+    tripulante(_,Tripulacion),
+    forall(tripulante(_,Tripulacion),peligroso(Pirata)).
 
+tripulacionTemible(Tripulacion):-
+    recompensaTotal(Tripulacion,Total),
+    Total > 500000000.
 
+peligroso(Pirata):-
+    recompensaActual(Pirata,RecompensaActual),
+    RecompensaActual > 100000000.
 
-
-
-
-
-
-
+% punto 6
 
 
 

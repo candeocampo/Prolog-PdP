@@ -109,12 +109,47 @@ peligroso(Pirata):-
     RecompensaActual > 100000000.
 
 % punto 6
+%% Agregamos a nuestra base de conocimientos:
+peligroso(Pirata):-
+    comio(Pirata,Fruta),
+    frutaPeligrosa(Fruta).
 
+comio(luffy, paramecia(gomugomu)).
+comio(luffy, paramecia(barabara)).
+comio(law, paramecia(opeope)).
+comio(chopper, zoan(hitohito, humano)).
+comio(lucci, zoan(nekoneko, leopardo)).
+comio(smoker, logia(mokumoku, humano)).
 
+frutaPeligrosa(paramecia(opeope)).
+frutaPeligrosa(zoan(_,Especie)):-
+    especieFeroz(Especie).
+frutaPeligrosa(logia,_).
 
+especieFeroz(lobo).
+especieFeroz(leopardo).
+especieFeroz(anaconda).
 
+%% 6.b
+%% Queriamos saber en un predicado si un pirata es peligroso respecto a la fruta que comio,
+%% por eso hicimos dos predicados nuevos llamados comio y frutaPeligrosa para analizar cada tipo de fruta.
+%% frutaPeligrosa es polimorfimo que independienemente de la fruta nos diga si es peligrosa o no.
+%% no necesita ser inversible frutaPeligrosa.
 
+% punto 7
+% Saber si una tripulación es de piratas de asfalto, que se cumple si ninguno de sus miembros puede nadar.
 
+% el enunciado dice que los que comen frutan no pueden nadar.
+tripulacionDeAsfalto(Tripulacion):-
+    tripulante(_,Tripulacion),
+    not((tripulante(Pirata,Tripulacion),
+    puedaNadar(Pirata))). %esta trabajando en afirmativo, hay como dos negaciones.
 
+puedeNadar(Pirata):-
+    not(comio(Pirata,Fruta)).
+
+deAsfalto(Tripulacion):-
+    tripulante(_,Tripulacion),
+    forall(tripulante(Pirata,Tripulacion),not(puedaNadar(Pirata))).
 
 

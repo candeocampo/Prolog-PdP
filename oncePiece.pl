@@ -1,4 +1,6 @@
-%% BASE DE CONOCIMIENTOS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%% BASE DE CONOCIMIENTOS %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Relaciona Pirata con Tripulacion
 tripulante(luffy, sombreroDePaja).

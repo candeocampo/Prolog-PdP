@@ -1,38 +1,43 @@
-jugador(ana,romanos,[herreria,forja,emplumado,laminas]).
-jugador(beto,incas,[herreria,forja,fundicion]).
-jugador(carola,romanos,[herreria,fundicion]).
-jugador(dimitri,romanos,[herreria,fundicion]).
+
+% jugador(Persona, Civilizacion)
+jugador(ana,romanos).
+jugador(beto,incas).
+jugador(carola,romanos).
+jugador(dimitri,romanos).
 
 
-cantidadDeJugadores(Civilizacion,CantidadJugadores):-
-    findall(Jugador,jugador(Jugador,Civilizacion,_),Jugadores),
-    length(Jugadores, CantidadJugadores).
-  
-civilizacionPopular(Civilizacion):-
-    jugador(_,Civilizacion,_),
-    cantidadDeJugadores(Civilizacion,CantidadJugadores),
-    CantidadJugadores > 1 .
+% tecnologia(Jugador,Tecnologias).
+tecnologia(ana,[herreria,forja, emplumado, laminas]).
+tecnologia(beto,[herreria,forja, fundicion]).
+tecnologia(carola,[herreria]).
+tecnologia(dimitri,[herreria,fundicion]).
 
-
-tieneTecnologiasBasicas(Jugador) :-
-    jugador(Jugador, _, Tecnologias),
-    member(herreria, Tecnologias),
-    member(forja, Tecnologias).
-
-% Predicado para verificar si un jugador tiene la tecnología de fundición
-tieneFundicion(Jugador) :-
-    jugador(Jugador, _, Tecnologias),
-    member(fundicion, Tecnologias).
-
-% Predicado para verificar si un jugador es de la civilización romana
-esRomano(Jugador) :-
-    jugador(Jugador, romanos, _).
-
-% Predicado principal para determinar si un jugador es experto en metales
-expertoEnMetales(Jugador) :-
-    tieneTecnologiasBasicas(Jugador).
+% Punto 1
 expertoEnMetales(Jugador):-
-    jugador(Jugador,romanos,_).
+    tecnologia(Jugador,Tecnologias),
+    armasDesarrolladas(Tecnologias),
+    yBien(Jugador).
+
+armasDesarrolladas(Tecnologias):-
+    member(herreria,Tecnologias),
+    member(forja, Tecnologias).
+    
+yBien(Jugador):-
+    jugador(Jugador,romanos).
+yBien(Jugador):-
+    tecnologia(Jugador,Tecnologias),
+    member(fundicion,Tecnologias).
+
+% Punto 2
+civilizacionPopular(Civilizacion):-
+    jugador(Jugador,Civilizacion),
+    jugador(OtroJugador,Civilizacion),
+    Jugador \= OtroJugador.
+
+% Punto 3
+alcanceGlobal(Tegnologia)
+
+
 
 
 

@@ -1,4 +1,6 @@
 
+% Punto 1
+
 % jugador(Persona, Civilizacion)
 jugador(ana,romanos).
 jugador(beto,incas).
@@ -12,7 +14,7 @@ tecnologia(beto,[herreria,forja, fundicion]).
 tecnologia(carola,[herreria]).
 tecnologia(dimitri,[herreria,fundicion]).
 
-% Punto 1
+% Punto 2
 expertoEnMetales(Jugador):-
     tecnologia(Jugador,Tecnologias),
     armasDesarrolladas(Tecnologias),
@@ -28,17 +30,25 @@ yBien(Jugador):-
     tecnologia(Jugador,Tecnologias),
     member(fundicion,Tecnologias).
 
-% Punto 2
+% Punto 3
 civilizacionPopular(Civilizacion):-
     jugador(Jugador,Civilizacion),
     jugador(OtroJugador,Civilizacion),
     Jugador \= OtroJugador.
 
-% Punto 3
-alcanceGlobal(Tegnologia)
+% Punto 4
+alcanceGlobal(TecnologiaBuscada):-
+    tieneTecnologia(_,TecnologiaBuscada),
+    forall(jugador(Jugador, _), tieneTecnologia(Jugador, TecnologiaBuscada)).
+    
+tieneTecnologia(Jugador,BuscarTecnologia):-
+    tecnologia(Jugador,Tecnologias),
+    member(BuscarTecnologia,Tecnologias).
 
-
-
+% Punto 5   
+desarrolloTecnologia(Civilizacion,Tecnologia):-
+    jugador(_,Civilizacion,Tecnologias),
+    member(Tecnologia,Tecnologias).
 
 
 

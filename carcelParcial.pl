@@ -105,5 +105,6 @@ persona(Persona):-
 controlaDirectaOIndirectamente(Uno,Otro):-
     controla(Uno,Otro).
 controlaDirectaOIndirectamente(Uno,Tercero):-
+    controla(Uno,Otro),
     controlaDirectaOIndirectamente(Tercero,Otro).
 

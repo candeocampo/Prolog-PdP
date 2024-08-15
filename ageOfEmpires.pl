@@ -9,6 +9,7 @@ jugador(juan, 1515, britones).
 jugador(marti, 1342, argentinos).
 
 % …tiene(Nombre, QueTiene).
+%..         unidad(samurai,Cuantas).
 tiene(aleP, unidad(samurai, 199)).
 tiene(aleP, unidad(espadachin, 10)).
 tiene(aleP, unidad(granjero, 10)).
@@ -16,12 +17,6 @@ tiene(aleP, recurso(800, 300, 100)).
 tiene(aleP, edificio(casa, 40)).
 tiene(aleP, edificio(castillo, 1)).
 tiene(juan, unidad(carreta, 10)).
-
-
-
-%tiene(Jugador,unidad(Unidad,Cantidad))
-%tiene(Jugador, recurso(Madera,Alimento,Oro))
-%tiene(Jugador, edificio(Edificio,Cantidad))
 
 % militar(Tipo, costo(Madera, Alimento, Oro), Categoria).
 militar(espadachin, costo(0, 60, 20), infanteria).
@@ -92,24 +87,96 @@ nomada(Jugador):-
     not(tieneEdificio(Jugador,casa)).
 
 tieneEdificio(Jugador,Edificio):-
-    tiene(Jugador,unidad(Edificio,_)).
+    tiene(Jugador,edificio(Edificio,_)).
 
 % Punto 6
+% Interpreto como que se quiere saber costo(Madera, Alimento, Oro)
+cuantoCuesta(Tipo,Costo):-
+    esMilitar(Tipo,Costo,_).
+cuantoCuesta(Tipo,Costo):-
+    esEdificio(Tipo,Costo).
+esEdificio(Tipo,Costo):-
+    edificio(Tipo,Costo).
 
+esAldeano(Tipo,Produccion):-
+    aldeano(Tipo,Produccion).
 
+cuantoCuesta(Tipo,costo(0,50,0)):-
+    esAldeano(Tipo,_).
+cuantoCuesta(Tipo,costo(100,0,50)):-
+    esCarretaOUna(Tipo).
 
+esCarretaOUna(carreta).
+esCarretaOUna(urnasMercantes).
 
+% Punto 7
+produccion(Tipo,ProduccionMin):-
+    esAldeano(Tipo,ProduccionMin).
+produccion(Tipo,produce(0,0,32)):-
+    esCarretaOUna(Tipo).
+produccion(Tipo,produce(0,0,Oro)):-
+    esMilitar(Tipo,_,_),
+    evaluarOro(Tipo,Oro).
 
+evaluarOro(keshik,10).
+evaluarOro(_,0).
 
+% Punto 8
+produccionTotal(Jugador,Recurso,ProduccionTotal):-
+    tiene(Jugador,_),
+    recursos(Recurso),
+    findall(Produccion,loProduce(Jugador,Recurso,Produccion),Lista),
+    sum_list(Lista,ProduccionTotal).
 
+loProduce(Jugador,Recurso,Produccion):-
+    tiene(Jugador,unidad(Tipo,CuantasTiene)),
+    produccion(Tipo,ProduccionTotal),
+    produccionDelRecurso(Recurso,ProduccionTotal,ProduccionRecurso),
+    Produccion is ProduccionRecurso * CuantasTiene.
 
+produccionDelRecurso(madera,produccion(Madera,_,_),Madera).
+produccionDelRecurso(alimento,produccion(_,Alimento,_),Alimento).
+produccionDelRecurso(oro,produccion(_,_,Oro),Oro).
 
+recursos(oro).
+recursos(madera).
+recursos(alimento).
 
+% Punto 10
+avanzaA(Jugador,Edad):-
+    jugador(Jugador,_,_),
+    puedeAvanzar(Jugador,Edad).
+avanzaA(_,edadMedia).
 
+puedeAvanzar(Jugador,edadFeudal):-
+    cumpleAlimento(Jugador,500),
+    tieneEdificio(Jugador,casa).
+    
+puedeAvanzar(Jugador,edadCastillos):-
+    cumpleAlimento(Jugador,800),
+    cumpleOro(Jugador,200),
+    ademasTiene(Edificio),
+    tieneEdificio(Jugador,Edificio).
 
+puedeAvanzar(Jugador,edadImperial):-
+    cumpleAlimento(Jugador,1000),
+    cumpleOro(Jugador,800),
+    edificioImperial(Edificioimperial),
+    tieneEdificio(Jugador,Edificioimperial).
 
+cumpleAlimento(Jugador,Cantidad):-
+    recursosPersona(Jugador,_,Alimento,_),
+    Cantidad >= Alimento.
+cumpleOro(Jugador,Cantidad):-
+    recursosPersona(Jugador,_,_,Oro),
+    Cantidad >= Oro.
 
+recursosPersona(Jugador,Madera,Alimento,Oro):-
+    tiene(Jugador,recurso(Madera,Alimento,Oro)).
 
+ademasTiene(herreria).
+ademasTiene(establo).
+ademasTiene(galeriaDeTiro).
 
-
-
+edificioImperial(universidad).
+edificioImperial(castillo).

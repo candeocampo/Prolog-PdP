@@ -73,6 +73,20 @@ alumnoConMayorPotencia(Alumno):-
     forall(totalPotencia(_,Potencia2),Potencia>=Potencia2).
 
 % Punto 5
+sinPatadas(Alumno):-
+    destreza(Alumno,_,Habilidades),
+    forall(member(Habilidad,Habilidades),not(patada(Habilidad))).
+
+% Punto 6
+soloSabePatear(Alumno):-
+    destreza(Alumno,_,Habilidades),
+    forall(member(Habilidad,Habilidades),patada(Habilidad)).
+
+% Punto 7
+
+
+
+
 
 
 

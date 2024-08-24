@@ -39,23 +39,72 @@ comprometidos(Persona,OtraPersona):-
 
 % Punto 3
 locoDeLosGatos(Persona):-
-   persona(Persona),
+   persona(Persona,_,_),
    findall(Mascota,tieneSolamenteGato(Persona,Mascota),Lista),
    length(Lista,CantidadGatos),
    CantidadGatos >1.
    
 tieneSolamenteGato(Persona,Mascota):-
-    persona(Persona),
+    persona(Persona,_,_),
     forall(adopto(Persona,Mascota,_),mascota(Mascota,gato(_,_))).
 
-persona(Persona):-
-    adopto(Persona,_,_).
-persona(Persona):-
-    regalo(Persona,_,_).
-persona(Persona):-
-    compro(Persona,_,_).
+persona(Persona,Mascota,Anio):-
+    adopto(Persona,Mascota,Anio).
+persona(Persona,Mascota,Anio):-
+    regalo(Persona,Mascota,Anio).
+persona(Persona,Mascota,Anio):-
+    compro(Persona,Mascota,Anio).
 
-% Punto 3
+% Punto 4
+puedeDormir(Persona):-
+    persona(Persona,_,_),
+    forall(persona(Persona,Mascota,_),not(estaChapita(Mascota))).
+
+estaChapita(perro(chico)).
+estaChapita(tortuga(_)).
+estaChapita(gato(macho,Caricias)):-
+    Caricias < 10.
+
+% Punto 5
+
+% Punto 6
+mascotaAlfa(Persona,Mascota):-
+    persona(Persona,Mascota,_),
+    forall((persona(Persona,OtraMascota,_),Mascota\=OtraMascota),dominante(Mascota,OtraMascota)).
+
+dominante(Mascota,Mascota2):- 
+    mascota(Mascota,Animal),
+    mascota(Mascota2,Animal2), 
+    domina(Animal,Animal2).
+
+domina(tortuga(agresiva),_).
+domina(gato(_,_),perro(_)).
+domina(perro(grande),perro(chico)).
+domina(GatoChapita,gato(_,_)):-
+    estaChapita(GatoChapita).
+
+% Punto 7
+materialista(Persona):-
+   not(persona(Persona,_,_)).
+
+materialista(Persona):-
+    persona(Persona,_,_),
+    mascotasAdoptadas(Persona,CantidadAdoptados),
+    mascotasCompradas(Persona,CantidadComprados),
+    CantidadComprados > CantidadAdoptados.
+
+mascotasAdoptadas(Persona,CantidadAdoptados):-
+    findall(MascotaAdoptada,adopto(Persona,MascotaAdoptada,_),ListaAdopto),
+    length(ListaAdopto,CantidadAdoptados).
+mascotasCompradas(Persona,CantidadComprados):-
+    findall(MascotaComprada,compro(Persona,MascotaComprada,_),ListaComprados),
+    length(ListaComprados,CantidadComprados).
+
+
+
+
+
+
 
 
 

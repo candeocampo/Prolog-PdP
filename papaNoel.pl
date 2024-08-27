@@ -160,7 +160,11 @@ hizoDosMalasAcciones(Hijo) :-
 sugarDaddy(Padre):-
     padre(Padre,_),
     forall(padre(Padre,Hijo),quiereRegaloCaroOQueValeLaPena(Hijo)).
-
+   % acá el forall si evalua para CADA hijo
+   % si lo hubiera puesto:
+   % forall((padre(Padre, Hijo), quiere(Hijo, Regalo)), quiereRegalosCarosOValeLaPena(Regalo)).
+   % Este predicado evalúa si para cada combinación de Hijo y Regalo de ese Hijo, 
+   % se cumple que el Regalo es caro o vale la pena.
 quiereRegaloCaroOQueValeLaPena(Hijo):-
     quiere(Hijo,Regalo),
     regaloCaro(Regalo).

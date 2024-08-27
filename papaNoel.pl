@@ -127,26 +127,36 @@ esCapaz(Padre,Regalo):-
 
 % Punto 6
 % este caso si puede costear
-regalosQueRecibe(Hijo,ListaRegalos) :-
-    padre(_,Hijo),
-    forall(puedeCostear(Padre,Hijo),padre(Padre,Hijo)),
-    findall(Regalo,quiere(Hijo,Regalo),ListaRegalos).
+regalosQueRecibe(Hijo,ListaRegalos):-
+    padre(Padre,Hijo),
+    puedeCostear(Padre,Hijo),
+    findall(Regalo,(quiere(Hijo,Regalo)),ListaRegalos).
 
 % este caso si no puede costear
-%regalosQueRecibe(Hijo,ListaRegalos):-
-%    padre(Padre,Hijo),
-%    queRecibe(Hijo,ListaRegalos),
-%    not(puedeCostear(Padre,Hijo)).
+regalosQueRecibe(Hijo,ListaRegalos):-
+    padre(Padre,Hijo),
+    not(puedeCostear(Padre,Hijo)),
+    recibe(Hijo,ListaRegalos).
 
-%queRecibe(Hijo,ListaRegalos):-
-%    findall(Regalo,(sePortoBien(Hijo),recibe(Hijo,Regalo)),ListaRegalos).
+recibe(Hijo,[media(gris),media(blanca)]):-
+    sePortoBien(Hijo).
+recibe(Hijo,[carbon]):-
+    hizoDosMalasAcciones(Hijo).
 
-%recibe(Hijo,medias(gris)).
-%recibe(Hijo,medias(blancas)).
+hizoDosMalasAcciones(Hijo) :-
+    findall(Accion, (accion(Hijo,Accion), not(buenaAccion(Accion))), AccionesMalas),
+    length(AccionesMalas, Cantidad),
+    Cantidad >= 2.
 
+% hizoDosMalasAcciones(Hijo) :-
+%    accion(Hijo,Accion1),
+%    accion(Hijo,Accion2),
+%    not(buenaAccion(Accion1)),
+%    not(buenaAccion(Accion2)).
+% Hacerlo de está manera hace que el predicado evalúe si existen dos acciones malas, 
+% pero no evalúa todas las acciones que ha hecho la persona para contar cuántas de ellas son malas.
 
-
-
+% Punto 7
 
 
 

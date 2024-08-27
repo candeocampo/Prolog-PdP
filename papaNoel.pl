@@ -144,8 +144,8 @@ recibe(Hijo,[carbon]):-
     hizoDosMalasAcciones(Hijo).
 
 hizoDosMalasAcciones(Hijo) :-
-    findall(Accion, (accion(Hijo,Accion), not(buenaAccion(Accion))), AccionesMalas),
-    length(AccionesMalas, Cantidad),
+    findall(Accion,(accion(Hijo,Accion),not(buenaAccion(Accion))),AccionesMalas),
+    length(AccionesMalas,Cantidad),
     Cantidad >= 2.
 
 % hizoDosMalasAcciones(Hijo) :-
@@ -157,12 +157,24 @@ hizoDosMalasAcciones(Hijo) :-
 % pero no evalúa todas las acciones que ha hecho la persona para contar cuántas de ellas son malas.
 
 % Punto 7
+sugarDaddy(Padre):-
+    padre(Padre,_),
+    forall(padre(Padre,Hijo),quiereRegaloCaroOQueValeLaPena(Hijo)).
 
+quiereRegaloCaroOQueValeLaPena(Hijo):-
+    quiere(Hijo,Regalo),
+    regaloCaro(Regalo).
+quiereRegaloCaroOQueValeLaPena(Hijo):-
+    quiere(Hijo,Regalo),
+    valeLaPena(Regalo).
 
+regaloCaro(juguete(_,Precio)):-
+    Precio > 500.
 
-
-
-
+valeLaPena(juguete(woody,_)).
+valeLaPena(juguete(buzz,_)).
+valeLaPena(bloques(Piezas)):-
+    member(cubo,Piezas).
 
 
 

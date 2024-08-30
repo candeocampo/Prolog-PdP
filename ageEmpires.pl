@@ -146,19 +146,42 @@ recurso(oro).
 recurso(madera).
 recurso(alimento).
 
+% Punto 10
+avanzaA(Jugador,Edad):-
+    jugador(Jugador,_,_),
+    edadALaQueAvanza(Jugador,Edad).
+avanzaA(_,edadMedia).
 
+edadALaQueAvanza(Jugador,edadFeudal):-
+    tieneCantidadAlimento(Jugador,500),
+    tieneEdificio(Jugador,casa).
+edadALaQueAvanza(Jugador,edadImperial):-
+    tieneCantidadAlimento(Jugador,1000),
+    tieneCantidadOro(Jugador,800),
+    edificioImperial(Edificio),
+    tieneEdificio(Jugador,Edificio).
+edadALaQueAvanza(Jugador,edadCastillos):-
+    tieneCantidadAlimento(Jugador,800),
+    tieneCantidadOro(Jugador,200),
+    tieneEdificio(Jugador,Edificio),
+    edificioNecesario(Edificio).
 
+tieneCantidadAlimento(Jugador,Cantidad):-
+    recursosJugador(Jugador,_,Alimento,_),
+    Alimento =< Cantidad.
+tieneCantidadOro(Jugador,CantidadOro):-
+    recursosJugador(Jugador,_,_,Oro),
+    CantidadOro >= Oro.
 
+recursosJugador(Jugador,Madera,Alimento,Oro):-
+    tiene(Jugador,recurso(Madera,Alimento,Oro)).
 
+edificioNecesario(herreria).
+edificioNecesario(establo).
+edificioNecesario(galeriaDeTiro).
 
-
-
-
-
-
-
-
-
+edificioImperial(castillo).
+edificioImperial(universidad).
 
 
 

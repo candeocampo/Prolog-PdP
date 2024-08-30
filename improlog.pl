@@ -33,12 +33,19 @@ instrumento(piano, armonico).
 instrumento(pandereta, ritmico).
 instrumento(voz, melodico(vocal)).
 
+% Punto 1
+tieneBuenaBase(Grupo):-
+    tocaInstrumentoEnBanda(Grupo,Persona,ritmico),
+    tocaInstrumentoEnBanda(Grupo,OtraPersona,armonico),
+    Persona \= OtraPersona.
 
+tocaInstrumentoEnBanda(Grupo,Persona,Rol):-
+    integrante(Grupo,Persona,Instrumento),
+    instrumento(Instrumento,Rol).
 
-
-
-
-
+% Punto 2
+destaca(Persona,Grupo):-
+    
 
 
 

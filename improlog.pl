@@ -3,25 +3,22 @@
 %% BASE DE CONOCIMIENTOS %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% integrante(Grupo, Persona, Instrumento).
 integrante(sophieTrio, sophie, violin).
 integrante(sophieTrio, santi, guitarra).
-integrante(vientosDeEste, lisa, saxo).
-integrante(vientosDeEste, santi, voz).
-integrante(vientosDeEste, santi, guitarra).
+integrante(vientosDelEste, lisa, saxo).
+integrante(vientosDelEste, santi, voz).
+integrante(vientosDelEste, santi, guitarra).
 integrante(jazzmin, santi, bateria).
 
-% nivelQueTiene(Persona, Instrumento, Nivel)
 nivelQueTiene(sophie, violin, 5).
 nivelQueTiene(santi, guitarra, 2).
 nivelQueTiene(santi, voz, 3).
 nivelQueTiene(santi, bateria, 4).
 nivelQueTiene(lisa, saxo, 4).
 nivelQueTiene(lore, violin, 4).
-nivelQueTiene(luis, trompleta, 1).
+nivelQueTiene(luis, trompeta, 1).
 nivelQueTiene(luis, contrabajo, 4).
 
-% instrumento(Instrumento, Rol)
 instrumento(violin, melodico(cuerdas)).
 instrumento(guitarra, armonico).
 instrumento(bateria, ritmico).
@@ -84,18 +81,38 @@ instrumentoQueSirve(bigBand,bateria).
 instrumentoQueSirve(bigBand,bajo).
 instrumentoQueSirve(bigBand,piano).
 
-
 % Punto 5
+puedeIncorporarse(Grupo,Persona,Instrumento):-
+    hayCupo(Instrumento,Grupo),
+    nivelQueTiene(Persona,Instrumento,Nivel),
+    not(perteneceAlGrupo(Grupo,Persona,_)),
+    nivelGrupo(Grupo,NivelGrupo),
+    Nivel >= NivelGrupo.
 
+perteneceAlGrupo(Grupo,Persona,Instrumento):-
+    integrante(Grupo,Persona,Instrumento).
 
+nivelGrupo(Grupo,NivelGrupo):-
+    grupo(Grupo,Tipo),
+    nivelMinimo(Tipo,NivelGrupo).
 
+nivelMinimo(bigBand,1).
+nivelMinimo(formacion(Instrumentos),NivelGrupo):-
+    length(Instrumentos,CantidadInstrumentos),
+    NivelGrupo is CantidadInstrumentos - 7.
 
+% Punto 6
+seQuedoEnBanda(Persona):-
+    persona(Persona),
+    not(perteneceAlGrupo(_,Persona,_)),
+    not(puedeIncorporarse(_,Persona,_)).
 
+persona(Persona):-
+    integrante(_,Persona,_).
+persona(Persona):-
+    nivelQueTiene(Persona,_,_).
 
-
-
-
-
+% Punto 7
 
 
 

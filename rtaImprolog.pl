@@ -99,7 +99,7 @@ puedeIncorporarse(Grupo, Persona, Instrumento):-
     hayCupo(Instrumento, Grupo),
     nivelQueTiene(Persona,Instrumento,Nivel),
     not(integrante(Grupo, Persona, _)),
-    grupo(Grupo, TipoDeGrupo),
+    grupo(Grupo,TipoDeGrupo),
     nivelMinimo(TipoDeGrupo, NivelEsperado),
     Nivel >= NivelEsperado.
 

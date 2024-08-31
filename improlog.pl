@@ -113,6 +113,32 @@ persona(Persona):-
     nivelQueTiene(Persona,_,_).
 
 % Punto 7
+puedeTocar(Grupo):-
+    cumpleNecesidadMinima(Grupo).
+
+cumpleNecesidadMinima(Grupo):-
+    grupo(Grupo,bigBand),
+    tieneBuenaBase(Grupo),
+    findall(Persona,
+        tocaInstrumentoEnBanda(Grupo,Persona,viento(_)),Lista),
+    length(Lista,CantidadTocanInstrumento),
+    CantidadTocanInstrumento >= 5.
+
+cumpleNecesidadMinima(formacion(Instrumentos),Grupo):-
+    grupo(Grupo,formacion(Instrumentos)),
+    forall(member(Instrumento,Instrumentos),integrante(Grupo,_,Instrumento)).
+     % el member sería "para todos los intrumentos requeridos"
+
+% Punto 8
+
+
+
+
+
+
+
+
+
 
 
 

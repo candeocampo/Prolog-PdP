@@ -30,6 +30,7 @@ instrumento(piano, armonico).
 instrumento(pandereta, ritmico).
 instrumento(voz, melodico(vocal)).
 
+
 % Punto 1
 tieneBuenaBase(Grupo):-
     tocaInstrumentoEnBanda(Grupo,Persona,ritmico),
@@ -58,6 +59,8 @@ nivelConQueToca(Grupo,Persona,Nivel):-
 grupo(vientosDelEste,bigBand).
 grupo(sophieTrio,formacion([contrabajo,guitarra,violin])).
 grupo(jazzmin,formacion([bateria,bajo,trompeta,piano,guitarra])).
+grupo(estudio1,ensamble(3)).
+
 
 % Punto 4
 esDeViento(Instrumento):-
@@ -100,6 +103,8 @@ nivelMinimo(bigBand,1).
 nivelMinimo(formacion(Instrumentos),NivelGrupo):-
     length(Instrumentos,CantidadInstrumentos),
     NivelGrupo is CantidadInstrumentos - 7.
+nivelMinimo(ensambe(NivelGrupo),NivelGrupo). % este agregamos para ensamble.
+
 
 % Punto 6
 seQuedoEnBanda(Persona):-
@@ -120,21 +125,38 @@ cumpleNecesidadMinima(Grupo):-
     grupo(Grupo,bigBand),
     tieneBuenaBase(Grupo),
     findall(Persona,
-        tocaInstrumentoEnBanda(Grupo,Persona,viento(_)),Lista),
+    tocaInstrumentoEnBanda(Grupo,Persona,viento(_)),Lista),
     length(Lista,CantidadTocanInstrumento),
     CantidadTocanInstrumento >= 5.
 
-cumpleNecesidadMinima(formacion(Instrumentos),Grupo):-
+cumpleNecesidadMinima(Grupo):-
     grupo(Grupo,formacion(Instrumentos)),
-    forall(member(Instrumento,Instrumentos),integrante(Grupo,_,Instrumento)).
-     % el member sería "para todos los intrumentos requeridos"
+    forall(member(Instrumento,Instrumentos),integrante(Grupo,_,Instrumento)). % el member sería "para todos los intrumentos requeridos"
 
-% Punto 8
+cumpleNecesidadMinima(Grupo):-
+    grupo(Grupo,ensambe(_)),
+    tieneBuenaBase(Grupo),
+    integrante(Grupo,_,melodico(_)).
+    
+% Otra forma era sin abstraccion (es irrelevante hacerla o no)
 
+%puedeTocar(Grupo):-
+%    grupo(Grupo, bigBand),
+%    tieneBuenaBase(Grupo),
+%    findall(TocaViento, (integrante(Grupo, TocaViento, Instrumento), esDeViento(Instrumento)),
+%     TocanViento),
+%    length(TocanViento, CantidadVientos),
+%    CantidadVientos >= 5.
 
+%puedeTocar(Grupo):-
+%    grupo(Grupo, formacion(Instrumentos)),
+%    forall(member(Instrumento, Instrumentos), integrante(Grupo, _, Instrumento)).
 
-
-
+% Agregado Punto 8
+%puedeTocar(Grupo):-
+%    grupo(Grupo, ensamble(_)),
+%    tieneBuenaBase(Grupo),
+%    cubreRolDeInstrumento(Grupo, _, melodico(_)).
 
 
 

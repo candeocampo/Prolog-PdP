@@ -52,8 +52,7 @@ cubreRolDeInstrumento(Grupo, Persona, Rol):-
     instrumento(Instrumento, Rol).
 
 %% Punto 2
-
-seDestaca(PersonaDestacada, Grupo):-
+seDestaca(PersonaDestacada,Grupo):-
     nivelConElQueToca(PersonaDestacada, Grupo, Nivel),
     forall((nivelConElQueToca(OtraPersona, Grupo, NivelMenor), OtraPersona \= Persona),
             Nivel >= NivelMenor + 2).

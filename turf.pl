@@ -72,28 +72,59 @@ premioImportante(granPremioNacional).
 premioImportante(granPremioRepublica).
 
 % Punto 5
+% ganadora(Apuesta,Resultado).
+ganadora(ganador(Caballo),Resultado):-
+    primerPuesto(Caballo,Resultado).
 
+ganadora(segundo(Caballo),Resultado):-
+    primerPuesto(Caballo,Resultado).
+ganadora(segundo(Caballo),Resultado):-
+    segundoPuesto(Caballo,Resultado).
 
+ganadora(exacta(Caballo1,Caballo2),Resultado):-
+    primerPuesto(Caballo1,Resultado),
+    segundoPuesto(Caballo2,Resultado).
 
+ganadora(imperfecta(Caballo1,Caballo2),Resultado):-
+    primerPuesto(Caballo1,Resultado),
+    segundoPuesto(Caballo2,Resultado).
 
+ganadora(imperfecta(Caballo1,Caballo2),Resultado):-
+    primerPuesto(Caballo2,Resultado),
+    segundoPuesto(Caballo1,Resultado).
 
+primerPuesto(Caballo,[Caballo|_]).
+segundoPuesto(Caballo,[_|Caballo]).
 
+% Punto 6
+% tiene(Caballo,Tipo).
+tiene(botagofo,tordo(negro)).
+tiene(oldMan,alazan(marron)).
+tiene(energica,ratonero(gris)).
+tiene(energica,ratonero(negro)).
+tiene(matBoy,palomino(marron)).
+tiene(matBoy,palomino(blanco)).
+tiene(yatasto,pinto(blanco)).
+tiene(yatasto,pinto(marron)).
 
+% color(Tipo,Color)
+color(tordo(Color),Color).
+color(alazan(Color),Color).
+color(ratonero(Color),Color).
+color(palomino(Color),Color).
+color(pinto(Color),Color).
 
+puedeComprar(Caballo,Color):-
+    tiene(Caballo,Tipo),
+    color(Tipo,Color),
+    findall(Caballo,(tiene(Caballo,Tipo),color(Tipo,Color)),CaballosPosibles),
+    CaballosPosibles  \= [].
 
+% tendria que agregar combinar(Caballo,CaballosPosibles) después del findall.
 
-
-
-
-
-
-
-
-
-
-
-
-
+combinar([], []).
+combinar([Caballo|CaballosPosibles], [Caballo|Caballos]):-combinar(CaballosPosibles, Caballos).
+combinar([_|CaballosPosibles], Caballos):-combinar(CaballosPosibles, Caballos).
 
 
 

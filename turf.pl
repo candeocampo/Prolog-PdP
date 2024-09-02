@@ -28,7 +28,7 @@ prefiere(matBoy,Jockey):-
     jockey(Jockey,Altura,_),
     Altura > 170.
 
-%representa(Persona,Stand).
+%representa(Jockey,Stand).
 representa(valdivieso,elTute).
 representa(falero,elTute).
 representa(lezcano,lasHormigas).
@@ -51,17 +51,27 @@ prefiereJockeys(Caballo):-
     Jockey \= OtroJockey.
     
 % Punto 3
+noPrefiereJockey(Caballo,Stud):-
+    caballo(Caballo),
+    stud(Stud),
+    not((prefiere(Caballo,Jockey),representa(Jockey,Stud))).
 
+stud(Stud):-
+    representa(_,Stud).
 
+% Punto 4
+piolines(Jockey):-
+    jockey(Jockey,_,_),
+    forall(ganoPremioImportante(Caballo),prefiere(Caballo,Jockey)).
 
+ganoPremioImportante(Caballo):-
+    gano(Caballo,Premio),
+    premioImportante(Premio).
 
+premioImportante(granPremioNacional).
+premioImportante(granPremioRepublica).
 
-
-
-
-
-
-
+% Punto 5
 
 
 

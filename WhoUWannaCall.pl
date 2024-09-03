@@ -47,13 +47,18 @@ puedeRealizar(Persona,Tarea):-
 %   member(Herramienta,Herramientas).
 
 % Punto 4
-tareaPedida(peter,limpiarTecho,1200).
-tareaPedida(winston,ordenarCuarto,200).
-tareaPedida(winston,limpiarTecho,175).
+%tareaPedida(tarea, cliente, metrosCuadrados).
+tareaPedida(ordenarCuarto, dana, 20).
+tareaPedida(cortarPasto, walter, 50).
+tareaPedida(limpiarTecho, walter, 70).
+tareaPedida(limpiarBanio, louis, 15).
 
-precio(limpiarBanio,120).
-precio(ordenarCuarto,400).
-precio(cortarPasto,700).
+%precio(tarea, precioPorMetroCuadrado).
+precio(ordenarCuarto, 13).
+precio(limpiarTecho, 20).
+precio(limpiarBanio, 55).
+precio(cortarPasto, 10).
+precio(encerarPisos, 7).
 
 cobrar(Cliente,PrecioTotal):-
     tiene(Cliente,_),

@@ -1,4 +1,4 @@
-# Prolog-PdP
+# Prolog - UTN FRBA
 
 * En la carpeta de PARCIALES encontrás en formato PDF los enunciados de los parciales resueltos.
 

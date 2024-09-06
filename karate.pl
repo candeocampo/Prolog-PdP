@@ -1,81 +1,95 @@
+%alumnoDe(Maestro, Alumno)  
+alumnoDe(miyagui,sara). 
+alumnoDe(miyagui,bobby). 
+alumnoDe(miyagui,sofia). 
+alumnoDe(chunLi,guidan).
 
-%alumnoDe(Maestro, Alumno)
-alumnoDe(miyagui, sara).
-alumnoDe(miyagui, bobby).
-alumnoDe(miyagui, sofia).
-alumnoDe(chunLi, guidan).
+% tipos de patadas:
+% patadaRecta(potencia, distancia).
+% patadaDeGiro(potencia, punteria, distancia).
+% patadaVoladora(potencia, distancia, altura, punteria).
+% golpeRecto(distancia, potencia).
+% codazo(potencia).
 
-% destreza(alumno, velocidad, [habilidades]).
-destreza(sofia,80,[golpeRecto(40,3),codazo(20)]).
-destreza(sara,70,[patadaRecta(80,2),patadaDeGiro(90,95,2),golpeRecto(1,90)]).
-destreza(bobby,80,[patadaVoladora(100,3,2,90),patadaDeGiro(50,20,1)]).
-destreza(guidan,70,[patadaRecta(60,1),patadaVoladora(100,3,2,90),patadaDeGiro(70,80,1)]).
+% destreza(alumno, velocidad, [habilidades]). 
+destreza(sofia, 80,[golpeRecto(40,3), codazo(20)]). 
+destreza(sara, 70,[patadaRecta(80,2), patadaDeGiro(90,95,2), golpeRecto(1,90)]). 
+destreza(bobby, 80,[patadaVoladora(100,3,2,90), patadaDeGiro(50,20,1)]). 
+destreza(guidan, 70,[patadaRecta(60,1), patadaVoladora(100,3,2,90), patadaDeGiro(70,80,1)]). 
 
-%categoria(Alumno, Cinturones)
-categoria(sofia,[blanco]).
-categoria(sara,[blanco,amarillo,naranja,rojo,verde,azul,violeta,marron,negro]).
-categoria(bobby,[blanco,amarillo,naranja,rojo,verde,azul,violeta,marron,negro]).
-categoria(guidan,[blanco,amarillo,naranja]).
+%categoria(Alumno, Cinturones)  
+categoria(sofia, [blanco]). 
+categoria(sara, [blanco, amarillo, naranja, rojo, verde, azul, violeta, marron, negro]). 
+categoria(bobby, [blanco, amarillo, naranja, rojo, verde, azul, violeta, marron, negro]). 
+categoria(guidan, [blanco, amarillo, naranja]).
 
 % Punto 1
-% patada(Patada).
+esBueno(Alumno):-
+    destreza(Alumno,Velocidad,Habilidades),
+    between(50,80,Velocidad),
+    member(golpeRecto(_,_),Habilidades).
+esBueno(Alumno):-
+    destreza(Alumno,_,Habilidades),
+    patada(Patada),
+    member(Patada,Habilidades),
+    member(OtraPatada,Habilidades),
+    Patada \= OtraPatada.
+
 patada(patadaRecta(_,_)).
 patada(patadaDeGiro(_,_,_)).
 patada(patadaVoladora(_,_,_,_)).
 
-esBueno(Alumno):-
-    seVerifica(Alumno).
-
-seVerifica(Alumno):-
-    destreza(Alumno,_,Habilidades),
-    member(Patada1,Habilidades),
-    member(Patada2,Habilidades),
-    patada(Patada1),
-    patada(Patada2),
-    Patada1 \= Patada2.
-seVerifica(Alumno):-
-    destreza(Alumno,Velocidad,Habilidades),
-    velocidadEntre(Velocidad),
-    member(golpeRecto(_,_),Habilidades).
-
-velocidadEntre(Velocidad):-
-    between(50,80,Velocidad).
-
 % Punto 2
 esAptoParaTorneo(Alumno):-
     esBueno(Alumno),
-    tieneCinturon(Alumno,verde).
+    alcanzoCinturon(verde,Alumno).
 
-tieneCinturon(Alumno,Cinturon):-
+alcanzoCinturon(Color,Alumno):-
     categoria(Alumno,Cinturones),
-    member(Cinturon,Cinturones).
+    member(Color,Cinturones).
 
 % Punto 3
-totalPotencia(Alumno,PotenciaTotal):-
-    destreza(Alumno,_,_),
-    findall(Potencia,(destreza(Alumno,_,Habilidades),calcularPotencia(Habilidades,Potencia)),Lista),
-    sum_list(Lista,PotenciaTotal).
+totalPotencia(Alumno,Potencia):-
+    destreza(Alumno,_,Habilidades),
+    calcularPotencia(Habilidades,Potencia).
 
 calcularPotencia(Habilidades,Potencia):-
-    member(Habilidad,Habilidades),
-    potenciaHabilidad(Habilidad,Potencia).
+    findall(Valor,(destreza(_,_,Habilidades),member(Habilidad,Habilidades),potencia(Habilidad,Valor))
+    ,Lista),
+    sum_list(Lista,Potencia).
 
-% potenciaHabilidad(Habilidad,Potencia).
-potenciaHabilidad(patadaRecta(Potencia,_),Potencia).
-potenciaHabilidad(patadaDeGiro(Potencia,_,_),Potencia).
-potenciaHabilidad(patadaVoladora(Potencia,_,_,_),Potencia).
-potenciaHabilidad(codazo(Potencia),Potencia).
-potenciaHabilidad(golpeRecto(_,Potencia),Potencia).
+% potencia(Habilidad,Potencia).
+potencia(patadaRecta(Potencia,_),Potencia).
+potencia(patadaDeGiro(Potencia,_,_),Potencia).
+potencia(patadaVoladora(Potencia,_,_,_),Potencia).
+potencia(golpeRecto(_,Potencia),Potencia).
+potencia(codazo(Potencia),Potencia).
+
+% otra forma:
+% totalPotencia(Alumno,PotenciaTotal):-
+% destreza(Alumno,_,Habilidades),
+% findall(Valor,(destreza(Alumno,_,Habilidades),calcularPotencia(Habilidades,Potencia)),Lista),
+%       sum_list(Potencia,PotenciaTotal).
+
+% calcularPotencia(Habilidades,Potencia):-
+%   member(Habilidad,Habilidades),
+%   potencia(Habilidad,Potencia).
 
 % Punto 4
 alumnoConMayorPotencia(Alumno):-
-    totalPotencia(Alumno,Potencia),
-    forall(totalPotencia(_,Potencia2),Potencia>=Potencia2).
+    totalPotencia(Alumno,Potencia1),
+    forall((totalPotencia(OtroAlumno,Potencia2),Alumno\=OtroAlumno),Potencia1 > Potencia2).
 
 % Punto 5
 sinPatadas(Alumno):-
     destreza(Alumno,_,Habilidades),
     forall(member(Habilidad,Habilidades),not(patada(Habilidad))).
+
+% sinPatadas(Alumno):-
+%    destreza(Alumno,_,Habilidades),
+%    patada(Patada), // verifica si esa patada específica no está en las habilidades del alumno.
+%    not(member(Patada,Habilidades)). 
+% solo verifica la ausencia de una patada específica y no garantiza que el alumno no sepa realizar ninguna patada
 
 % Punto 6
 soloSabePatear(Alumno):-
@@ -85,46 +99,52 @@ soloSabePatear(Alumno):-
 % Punto 7
 potencialesSemifinalistas(Alumno):-
     esAptoParaTorneo(Alumno),
-    tieneMaestro(Alumno),
-    habilidadConBuenEstilo(Alumno).
+    alumnoDe(Maestro,Alumno),
+    tieneVariosAlumnos(Maestro),
+    estiloArtistico(Alumno).
 
-tieneMaestro(Alumno):-
+estiloArtistico(Alumno):-
+    destreza(Alumno,_,Habilidades),
+    obtenerPotencia(Habilidades,100).
+estiloAristico(Alumno):-
+    destreza(Alumno,_,Habilidades),
+    obtenerPunteria(Habilidades,90).
+
+obtenerPotencia(Habilidades,Potencia):-
+    potencia(Habilidad,Potencia),
+    member(Habilidad,Habilidades).
+
+obtenerPunteria(Habilidades,Potencia):- 
+    punteria(Habilidad,Potencia),
+    member(Habilidad,Habilidades).
+
+punteria(patadaDeGiro(_,Punteria,_),Punteria).
+punteria(patadaVoladora(_,_,_,Punteria),Punteria).
+
+tieneVariosAlumnos(Maestro):-
     alumnoDe(Maestro,Alumno),
     alumnoDe(Maestro,OtroAlumno),
     Alumno \= OtroAlumno.
 
-punteriaHabilidad(patadaDeGiro(_,Punteria,_),Punteria).
-punteriaHabilidad(patadaVoladora(_,_,_,Punteria),Punteria).
 
-habilidadConBuenEstilo(Alumno):-
-    destreza(Alumno,_,Habilidades),
-    obtenerPunteria(Habilidades,90).
 
-habilidadConBuenEstilo(Alumno):-
-    destreza(Alumno,_,Habilidades),
-    obtenerPotencia(Habilidades,100).
 
-obtenerPunteria(Habilidades,Punteria):-
-    member(HabilidadPunteria,Habilidades),
-    punteriaHabilidad(HabilidadPunteria,Punteria).
 
-obtenerPotencia(Habilidades,Potencia):-
-    member(HabilidadPotencia,Habilidades),
-    potenciaHabilidad(HabilidadPotencia,Potencia).
 
-% Punto 8
-semifinalistas(ListaAlumnos):-
-    findall(Alumno, potencialesSemifinalistas(Alumno),ListaAlumnos).
 
-% Punto 9
-%% El polimorfismo en Prolog se ve en la forma en que diferentes predicados trabajan con distintos 
-%% tipos de datos o estructuras de forma genérica. Por ejemplo, potenciaHabilidad/2 es un predicado 
-%% que funciona con varias formas de habilidades (patadaRecta, patadaDeGiro, etc.) 
-%% sin necesidad de modificar el código para cada tipo específico. Esto permite que 
-%% potenciaHabilidad/2 se aplique a cualquier habilidad de manera uniforme, sin importar su tipo específico.
 
-% El uso de predicados de orden superior, como member/2, forall/2, y findall/3, 
-% permite que se manipulen listas y se realicen comprobaciones o búsquedas de manera abstracta y reutilizable.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

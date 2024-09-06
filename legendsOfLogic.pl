@@ -36,8 +36,7 @@ esLegendario(Pokemon):-
 misterioso(Pokemon):-
     pokemon(Pokemon,Tipo),
     not((pokemon(OtroPokemon,Tipo),Pokemon \= OtroPokemon)).
-    %forall((pokemon(OtroPokemon,OtroTipo),Pokemon \= OtroPokemon),Tipo \= OtroTipo).
-    % no es conviene utilizar el forall acá pues se usa cuando deseas comprobar que todos los elementos de un conjunto cumplen una condición. 
+
 misterioso(Pokemon):-
     pokemon(Pokemon,_),
     not(tiene(_,Pokemon)).
@@ -95,7 +94,7 @@ esPokemon(Pokemon):-
 
 % Punto 3
 esPicante(Entrenador):-
-    tiene(Entrenador,_), % acá no va pokemon pq no nos interesa ligarla xd
+    tiene(Entrenador,_),
     forall(tiene(Entrenador,Pokemon),pokemonPicante(Pokemon)).
 
 pokemonPicante(Pokemon):-

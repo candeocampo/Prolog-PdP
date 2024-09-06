@@ -57,128 +57,114 @@ padre(ricardo,maria).
 padre(andrea,andres).
 padre(laura,gabriela).
 
+recibeRegalo(Persona):-
+    creeEnPapaNoel(Persona).
+
+creeEnPapaNoel(Persona):-
+    persona(Persona,Edad),
+    Edad < 13.
+creeEnPapaNoel(federico).
+
 % Punto 1
-buenaAccion(ayudar(_)).
 buenaAccion(favor(_)).
-buenaAccion(travesura(Nivel)):-
-    Nivel =< 3.
+buenaAccion(ayudar(_)).
+buenaAccion(travesura(NivelTravesura)):-
+    NivelTravesura =< 3.
 
 % Punto 2
 sePortoBien(Persona):-
     accion(Persona,_),
     forall(accion(Persona,Accion),buenaAccion(Accion)).
-    % con el forall me refiero a que todas las acciones de esa persona son buenas.
 
 % Punto 3
-creeEnPapaNoel(Persona):-
-    persona(Persona,Edad),
-    Edad < 13.
-
 malcriador(Padre):-
     padre(Padre,_),
-    forall(padre(Padre,Hijx),esMalcriado(Hijx)).
+    forall(padre(Padre,Hijo),malcriado(Hijo)).
 
-esMalcriado(Hijx):-
-    not(creeEnPapaNoel(Hijx)).
-esMalcriado(Hijx):-
-    not((accion(Hijx,Accion),buenaAccion(Accion))).
-
-    % accion(Hije,Accion),
-    % not(buenaAccion(Accion)).
-% esta clausula está mal porque estaría diciendo que es malcriado aquella persona que 
-%  si ha realizado alguna acción y esa acción no es buena y el enunciado dice que no ha REALIZADO NINGUNA BUENA ACCIÓN.
+malcriado(Hijo):-
+    not((accion(Hijo,Accion),buenaAccion(Accion))).
+malcriado(Hijo):-
+    not(creeEnPapaNoel(Hijo)).
 
 % Punto 4
-%puedeCostear(Padre,Hije):-
-%    padre(Padre,Hije),
-%    forall((presupuesto(Padre,Presupuesto),quiere(Hije,Juguete),precioRegalo(Juguete,PrecioRegalo)), Presupuesto >= PrecioRegalo).
-% al usar forall no estas sumando los precios de todos los deseos, sino verificando cada uno por separado.
-% Presupuesto >= PrecioRegalo está comparando el presupuesto con cada precio de regalo individualmente, 
-% pero no se asegura de que el presupuesto pueda cubrir la suma total de todos los regalos.
-
-puedeCostear(Padre,Hijx):-
-    padre(Padre,Hijx),
+puedeCostear(Padre,Hijo):-
+    padre(Padre,Hijo),
     presupuesto(Padre,Presupuesto),
-    costoTotalRegalos(Hijx,PresupuestoRegalos),
-    Presupuesto >= PresupuestoRegalos.
+    puedePagar(Hijo,PrecioRegalos),
+    Presupuesto >= PrecioRegalos.
 
-costoTotalRegalos(Hijx,PresupuestoRegalos):-
-    findall(Precio,(quiere(Hijx,Juguete),precioRegalo(Juguete,Precio)),ListaJuguetes),
-    sum_list(ListaJuguetes,PresupuestoRegalos).
-    
-precioRegalo(abrazo,0).
-precioRegalo(juguete(_,Precio),Precio).
-precioRegalo(bloques(ListaBloques),Precio):-
-    length(ListaBloques,CantidadBloques),
-    Precio is CantidadBloques * 3.
-    
+precio(juguete(_,Precio),Precio).
+precio(bloques(Piezas),Precio):-
+    length(Piezas,CantidadPiezas),
+    Precio is CantidadPiezas * 3.
+precio(abrazo,0).
+
+puedePagar(Hijo,PrecioRegalos):-
+    findall(Precio,(quiere(Hijo,Regalo),precio(Regalo,Precio)),ListaPrecios),
+    sum_list(ListaPrecios,PrecioRegalos).
+
 % Punto 5
-regaloCandidatoPara(Persona,Regalo):-
+regaloCandidatoPara(Persona, Regalo):-
     sePortoBien(Persona),
-    quiere(Persona,Regalo),
-    padre(Padre,Persona),
-    esCapaz(Padre,Regalo),
-    creeEnPapaNoel(Persona).    
+    quiere(Persona, Regalo),
+    padre(Padre, Persona),
+    puedeComprar(Padre, Regalo),
+    creeEnPapaNoel(Persona).
 
-esCapaz(Padre,Regalo):-
+puedeComprar(Padre,Regalo):-
     presupuesto(Padre,Presupuesto),
-    precioRegalo(Regalo,PrecioRegalo),
+    precio(Regalo,PrecioRegalo),
     Presupuesto >= PrecioRegalo.
 
 % Punto 6
-% este caso si puede costear
-regalosQueRecibe(Hijo,ListaRegalos):-
-    padre(Padre,Hijo),
-    puedeCostear(Padre,Hijo),
-    findall(Regalo,(quiere(Hijo,Regalo)),ListaRegalos).
+regalosQueRecibe(Persona,Regalos):-
+    padre(Padre,Persona),
+    puedeCostear(Padre,Persona),
+    findall(Regalo,quiere(Persona,Regalo),Regalos).
 
-% este caso si no puede costear
-regalosQueRecibe(Hijo,ListaRegalos):-
-    padre(Padre,Hijo),
-    not(puedeCostear(Padre,Hijo)),
-    recibe(Hijo,ListaRegalos).
+regalosQueRecibe(Persona,Regalos):-
+    padre(Padre,Persona),
+    not(puedeCostear(Padre,Persona)),
+    recibeRegaloAlternativo(Persona,Regalos).
 
-recibe(Hijo,[media(gris),media(blanca)]):-
-    sePortoBien(Hijo).
-recibe(Hijo,[carbon]):-
-    hizoDosMalasAcciones(Hijo).
+recibeRegaloAlternativo(Persona,[media(blanca),media(negra)]):-
+    sePortoBien(Persona).
 
-hizoDosMalasAcciones(Hijo) :-
-    findall(Accion,(accion(Hijo,Accion),not(buenaAccion(Accion))),AccionesMalas),
-    length(AccionesMalas,Cantidad),
-    Cantidad >= 2.
+regaloAltenativo(Persona,[carbon]):-
+    accion(Persona,Accion1),
+    accion(Persona,Accion2),
+    not(buenaAccion(Accion1)),
+    not(buenaAccion(Accion2)).
 
-% hizoDosMalasAcciones(Hijo) :-
-%    accion(Hijo,Accion1),
-%    accion(Hijo,Accion2),
-%    not(buenaAccion(Accion1)),
-%    not(buenaAccion(Accion2)).
-% Hacerlo de está manera hace que el predicado evalúe si existen dos acciones malas, 
-% pero no evalúa todas las acciones que ha hecho la persona para contar cuántas de ellas son malas.
+% podia haber usado findall:
+% findall(Accion,(accion(Persona,Accion),not(buenaAccion(Accion)),Lista)),
+% lenght(Lista,Cantidad),
+% Cantidad >= 2.
 
 % Punto 7
 sugarDaddy(Padre):-
     padre(Padre,_),
-    forall(padre(Padre,Hijo),quiereRegaloCaroOQueValeLaPena(Hijo)).
-   % acá el forall si evalua para CADA hijo
-   % si lo hubiera puesto:
-   % forall((padre(Padre, Hijo), quiere(Hijo, Regalo)), quiereRegalosCarosOValeLaPena(Regalo)).
-   % Este predicado evalúa si para cada combinación de Hijo y Regalo de ese Hijo, 
-   % se cumple que el Regalo es caro o vale la pena.
-quiereRegaloCaroOQueValeLaPena(Hijo):-
+    forall(padre(Padre,Hijo),quiereRegalo(Hijo)).
+
+quiereRegalo(Hijo):-
     quiere(Hijo,Regalo),
     regaloCaro(Regalo).
-quiereRegaloCaroOQueValeLaPena(Hijo):-
+quiereRegalo(Hijo):-
     quiere(Hijo,Regalo),
     valeLaPena(Regalo).
 
-regaloCaro(juguete(_,Precio)):-
+regaloCaro(Regalo):-
+    precio(Regalo,Precio),
     Precio > 500.
 
-valeLaPena(juguete(woody,_)).
-valeLaPena(juguete(buzz,_)).
 valeLaPena(bloques(Piezas)):-
     member(cubo,Piezas).
+valeLaPena(juguete(Nombre,_)):-
+    loVale(Nombre).
+
+loVale(woody).
+loVale(buzz).
+
 
 
 

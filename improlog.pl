@@ -138,34 +138,5 @@ cumpleNecesidadMinima(Grupo):-
     tieneBuenaBase(Grupo),
     integrante(Grupo,_,melodico(_)).
     
-% Otra forma era sin abstraccion (es irrelevante hacerla o no)
-
-%puedeTocar(Grupo):-
-%    grupo(Grupo, bigBand),
-%    tieneBuenaBase(Grupo),
-%    findall(TocaViento, (integrante(Grupo, TocaViento, Instrumento), esDeViento(Instrumento)),
-%     TocanViento),
-%    length(TocanViento, CantidadVientos),
-%    CantidadVientos >= 5.
-
-%puedeTocar(Grupo):-
-%    grupo(Grupo, formacion(Instrumentos)),
-%    forall(member(Instrumento, Instrumentos), integrante(Grupo, _, Instrumento)).
-
-% Agregado Punto 8
-%puedeTocar(Grupo):-
-%    grupo(Grupo, ensamble(_)),
-%    tieneBuenaBase(Grupo),
-%    cubreRolDeInstrumento(Grupo, _, melodico(_)).
-
-
-
-
-
-
-
-
-
-
 
 

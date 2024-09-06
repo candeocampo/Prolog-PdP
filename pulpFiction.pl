@@ -141,7 +141,7 @@ interactua(ayudar(Persona),Amigo):-
     amistad(Persona,Amigo).
 
 hartoDe(Personaje,OtroPersonaje):-
-    encargo(_,Personaje,_), % lo que va acá tiene que ser el mismo predicado que uso en el forall para ligarlo.
+    encargo(_,Personaje,_), 
     personaje(OtroPersonaje,_),
     forall(encargo(_,Personaje,Actividad),interactua(Actividad,OtroPersonaje)).
 
@@ -163,9 +163,6 @@ tieneCaracteristica(Caracteristica1,Caracteristica2):-
 tieneCaracteristica(Caracteristica1,Caracteristica2):-
     member(Caracteristica,Caracteristica2),
     not(member(Caracteristica,Caracteristica1)).
-
-
-
 
 
 
